@@ -6,7 +6,9 @@ flasgger
 pymysql
 cryptography
 python-dotenv
-
+pytest
+pytest-flask
+pytest-cov
 
 
 # # Core Flask
@@ -37,4 +39,20 @@ python-dotenv
 # gunicorn==22.0.0
 
 
-# #pip install -r requirements.txt
+# # #pip install -r requirements.txt
+# 6️⃣ Run Tests
+# python -m pytest
+
+# 7️⃣ Run Tests with Coverage
+# python -m pytest --cov=app --cov-report=term-missing
+
+# HTML Coverage Report
+# python -m pytest --cov=app --cov-report=html
+
+
+# Open:
+
+# htmlcov/index.html
+
+# ✅ Expected Results
+# Test	

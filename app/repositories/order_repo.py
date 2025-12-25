@@ -15,3 +15,14 @@ def find_all():
 def delete(order):
     db.session.delete(order)
     db.session.commit()
+
+
+def get_orders_paginated(page, size):
+    query = Order.query
+
+    total = query.count()
+
+    orders = query.offset((page - 1) * size).limit(size).all()
+
+    return orders, total
+

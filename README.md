@@ -255,7 +255,6 @@ By completing this project, you will learn:
 ✔ Backend learners
 ✔ Java → Python developers
 ✔ Interview preparation
-✔ Resume project
 
 ---
 

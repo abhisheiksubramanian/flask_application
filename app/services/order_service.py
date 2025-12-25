@@ -25,17 +25,20 @@ def delete_order(order_id):
     order_repo.delete(order)
 
 
-def list_orders_paginated(status=None, page=1, size=10):
-    query = Order.query
+# def list_orders_paginated(status=None, page=1, size=10):
+#     query = Order.query
 
-    if status:
-        query = query.filter_by(status=status)
+#     if status:
+#         query = query.filter_by(status=status)
 
-    pagination = paginate(query, page, size)
+#     pagination = paginate(query, page, size)
 
-    return {
-        "items": pagination.items,
-        "total": pagination.total,
-        "page": pagination.page,
-        "pages": pagination.pages
-    }
+#     return {
+#         "items": pagination.items,
+#         "total": pagination.total,
+#         "page": pagination.page,
+#         "pages": pagination.pages
+#     }
+
+def list_orders_paginated(page, size):
+    return order_repo.get_orders_paginated(page, size)
