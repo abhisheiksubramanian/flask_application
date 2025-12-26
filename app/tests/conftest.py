@@ -5,6 +5,7 @@ from app.extensions.db import db
 @pytest.fixture
 def app():
     app = create_app(testing=True)
+
     app.config.update(
         TESTING=True,
         JWT_SECRET_KEY="test-secret",

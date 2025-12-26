@@ -7,7 +7,8 @@ def save(order):
     return order
 
 def find_by_id(order_id):
-    return Order.query.get(order_id)
+    # return Order.query.get(order_id)
+    return db.session.get(Order, order_id)
 
 def find_all():
     return Order.query.all()
@@ -25,4 +26,3 @@ def get_orders_paginated(page, size):
     orders = query.offset((page - 1) * size).limit(size).all()
 
     return orders, total
-

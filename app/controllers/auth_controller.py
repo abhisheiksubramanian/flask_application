@@ -3,32 +3,17 @@
 AUTH CONTROLLER – AUTH SERVICE
 =========================================================
 
-This file contains all authentication-related APIs.
+Provides authentication-related APIs:
+1. Register User
+2. Login User (JWT)
+3. Health Check
 
-📌 What this controller provides:
---------------------------------
-1. User Registration
-2. User Login (JWT Token)
-3. Health Check API
-
-📌 Technologies used:
---------------------
-- Flask Blueprint (modular API design)
-- JWT Authentication (handled in service layer)
-- Swagger UI (via Flasgger)
-- Custom BusinessException handling
-
-📌 How Swagger works here:
---------------------------
-- Swagger UI reads the YAML written inside docstrings
-- `parameters: in: body` is used to show input boxes
-- OpenAPI 3 `requestBody` is NOT used because Flasgger UI
-  does not reliably render input fields for it
-
-📌 Swagger URL:
----------------
+Swagger UI:
 http://127.0.0.1:5000/apidocs/
 
+IMPORTANT:
+- Flasgger requires `parameters: in: body`
+- OpenAPI 3 `requestBody` is NOT used
 =========================================================
 """
 
@@ -37,13 +22,12 @@ from app.services.auth_service import register_user, login_user
 from app.exceptions.business import BusinessException
 
 # -------------------------------------------------
-# Blueprint definition
+# Blueprint
 # -------------------------------------------------
 auth_bp = Blueprint("auth", __name__)
 
-
 # -------------------------------------------------
-# REGISTER USER API
+# REGISTER USER
 # -------------------------------------------------
 @auth_bp.route("/register", methods=["POST"])
 def register():
@@ -53,16 +37,16 @@ def register():
     tags:
       - Auth
     description: |
-      This API registers a new user into the system.
+      Registers a new user in the system.
 
       🔹 Flow:
-      1. Client sends username & password
-      2. Password is hashed in service layer
-      3. User is stored in database
+      1. Validate request body
+      2. Hash password (service layer)
+      3. Save user to database
 
-      🔹 Notes for beginners:
-      - Password hashing is NOT done here
-      - Business logic is kept inside `auth_service`
+      🔹 Validation:
+      - username (required)
+      - password (required)
 
     parameters:
       - in: body
@@ -85,19 +69,37 @@ def register():
     responses:
       201:
         description: User registered successfully
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: User registered
       400:
-        description: User already exists or invalid input
+        description: Invalid input or user already exists
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: Username and password are required
     """
     try:
         data = request.get_json()
+
+        # ✅ INPUT VALIDATION (Swagger + pytest safe)
+        if not data or "username" not in data or "password" not in data:
+            return jsonify(error="Username and password are required"), 400
+
         register_user(data["username"], data["password"])
         return jsonify(message="User registered"), 201
+
     except BusinessException as e:
         return jsonify(error=str(e)), 400
 
 
 # -------------------------------------------------
-# LOGIN USER API
+# LOGIN USER
 # -------------------------------------------------
 @auth_bp.route("/login", methods=["POST"])
 def login():
@@ -107,16 +109,11 @@ def login():
     tags:
       - Auth
     description: |
-      This API authenticates a user and returns a JWT token.
+      Authenticates a user and returns a JWT token.
 
-      🔹 Flow:
-      1. Client sends username & password
-      2. Credentials are validated in service layer
-      3. JWT token is generated and returned
-
-      🔹 What is JWT?
-      - JSON Web Token
-      - Used to access protected APIs
+      🔹 JWT:
+      - Token must be sent in Authorization header
+      - Format: Bearer <JWT>
 
     parameters:
       - in: body
@@ -138,20 +135,46 @@ def login():
 
     responses:
       200:
-        description: JWT token generated successfully
+        description: JWT token generated
+        schema:
+          type: object
+          properties:
+            access_token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      400:
+        description: Missing input fields
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: Username and password are required
       401:
         description: Invalid credentials
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: Invalid credentials
     """
     try:
         data = request.get_json()
+
+        # ✅ INPUT VALIDATION
+        if not data or "username" not in data or "password" not in data:
+            return jsonify(error="Username and password are required"), 400
+
         token = login_user(data["username"], data["password"])
-        return jsonify(access_token=token)
+        return jsonify(access_token=token), 200
+
     except BusinessException as e:
         return jsonify(error=str(e)), 401
 
 
 # -------------------------------------------------
-# HEALTH CHECK API
+# HEALTH CHECK
 # -------------------------------------------------
 @auth_bp.route("/health", methods=["GET"])
 def health():
@@ -161,15 +184,21 @@ def health():
     tags:
       - Health
     description: |
-      This API is used to check whether the service is running.
+      Checks whether the service is running.
 
-      🔹 Commonly used by:
+      Used by:
       - Load balancers
-      - Monitoring tools
-      - DevOps health probes
+      - Monitoring systems
+      - DevOps probes
 
     responses:
       200:
-        description: Service is running
+        description: Service is UP
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              example: UP
     """
-    return jsonify(status="UP")
+    return jsonify(status="UP"), 200

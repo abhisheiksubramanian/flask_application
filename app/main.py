@@ -9,9 +9,15 @@ from app.exceptions.handlers import register_error_handlers
 from app.extensions.swagger import swagger
 
 
-def create_app():
+def create_app(testing=False):
     app = Flask(__name__)
+
+    if testing:
+        app.config["TESTING"] = True
+
     app.config.from_object(DevConfig)
+
+
 
     db.init_app(app)
     jwt.init_app(app)

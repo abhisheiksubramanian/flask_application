@@ -1,14 +1,12 @@
-from flask_jwt_extended import create_access_token
-
-def admin_token(client):
+def register_and_login(client, username, password):
     client.post(
         "/auth/register",
-        json={"username": "admin", "password": "admin123"}
+        json={"username": username, "password": password}
     )
 
     login = client.post(
         "/auth/login",
-        json={"username": "admin", "password": "admin123"}
+        json={"username": username, "password": password}
     )
 
     return login.json["access_token"]

@@ -234,6 +234,147 @@ Headers:
 Authorization: Bearer <ADMIN_JWT_TOKEN>
 ```
 
+
+
+## 🧪 Testing & Coverage (Pytest)
+
+This project uses **pytest** for testing and **pytest-cov** for test coverage.
+
+Testing is written for:
+- Controllers (Flask APIs)
+- Service layer
+- Role-based access
+- Pagination
+- Error handling
+
+---
+
+## 📦 Install Test Dependencies
+
+```bash
+pip install pytest pytest-cov
+````
+
+
+## 🧪 Testing & Coverage (Pytest)
+
+This project uses **pytest** for testing and **pytest-cov** for test coverage.
+Tests are written for controllers, services, role-based access, pagination, and error handling.
+
+---
+
+## 📦 Install Test Dependencies
+
+Install required testing libraries:
+
+```bash
+pip install pytest pytest-cov
+```
+
+## ▶️ Run All Tests
+Runs all test cases in the project:
+
+```bash
+python -m pytest
+```
+
+## ▶️ Run Tests with Verbose Output
+Shows each test name and result (PASS / FAIL):
+
+```bash
+python -m pytest -v
+```
+
+## ▶️ Stop on First Failure (Debug Mode)
+Useful while fixing test failures:
+
+```bash
+python -m pytest -x
+```
+
+## ▶️ Run a Specific Test File
+Run only auth controller tests:
+
+```bash
+python -m pytest app/tests/test_auth_controller.py
+```
+
+## ▶️ Run only order controller tests:
+
+```bash
+python -m pytest app/tests/test_order_controller.py
+```
+
+## ▶️ Run a Specific Test Function
+```bash
+python -m pytest app/tests/test_auth_controller.py::test_login_user_success
+```
+
+---
+## 📊 Test Coverage (IMPORTANT)
+
+
+
+## ▶️ Coverage for Entire Application
+
+```bash
+python -m pytest --cov=app --cov-report=term-missing
+```
+
+## ▶️ Coverage for Auth Controller (Correct Way)
+⚠️ Important (Windows Safe)
+Always use file path, not dotted module path.
+
+``` bash
+python -m pytest --cov=app/controllers/auth_controller.py --cov-report=term-missing
+```
+
+## ▶️ Coverage for Order Controller
+```bash
+
+python -m pytest --cov=app/controllers/order_controller.py --cov-report=term-missing
+```
+
+## 📈 Generate HTML Coverage Report
+Creates a browser-based coverage report:
+
+```bash
+python -m pytest --cov=app --cov-report=html
+```
+
+## 📈 Open the report in browser:
+
+``` bash
+htmlcov/index.html
+```
+
+## ✅ Enforce Minimum Coverage (CI Ready)
+Fail the build if coverage is below 90%:
+
+```bash
+python -m pytest --cov=app --cov-fail-under=90
+```
+
+---
+
+## 🧠 Testing Best Practices
+Always activate virtual environment before running tests
+
+- Use SQLite in-memory DB for tests
+
+- Use db.session.remove() in test teardown
+
+- JWT tokens are immutable — re-login after role changes
+
+- Use unittest.mock.patch() to test exception paths
+
+- Controller tests use Flask test client
+
+- Service tests run inside app context
+
+
+
+
 ---
 
 ## 🧠 Learning Outcomes (For Developers)
