@@ -48,6 +48,7 @@ order-service/
 │   ├── security/         # JWT & roles
 │   ├── extensions/       # DB, JWT, Swagger
 │   ├── config/           # Environment configs
+|   ├── tests/            # Test Case
 │   └── main.py           # App entry point
 │
 ├── requirements.txt
